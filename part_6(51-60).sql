@@ -40,10 +40,30 @@ WHERE class NOT IN
 FROM Classes JOIN Ships
 ON Classes.class = Ships.class)
 
+
 -- 53. With a precision of two decimal places, determine the average number of guns for the battleship classes.
 
 SELECT CAST(AVG(numGuns * 1.0)AS NUMERIC(4,2))  AS AvgnumGuns
 FROM Classes
 WHERE type = 'bb'
+
+
+-- 54. With a precision of two decimal places, determine the average number of guns for all battleships (including the ones in the Outcomes table).
+
+WITH a AS(
+SELECT ship AS class, ship AS NAME
+FROM Outcomes
+UNION 
+SELECT class, name
+FROM Ships ),
+b AS(
+SELECT  a.name, a.class, numGuns
+FROM classes  INNER JOIN a
+ON classes.class = a.class
+WHERE TYPE = 'bb')
+SELECT CAST(AVG(numGuns * 1.0)AS NUMERIC(4,2))  AS AvgnumGuns
+FROM b
+
+
 
 
