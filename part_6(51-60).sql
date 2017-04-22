@@ -72,7 +72,26 @@ FROM b
 SELECT Classes.class,  MIN(launched)
 FROM Classes LEFT JOIN Ships
 ON Classes.class = Ships.class
+GROUP BY Classes.class;
+
+
+-- 56. For each class, find out the number of ships of this class that were sunk in battles. 
+-- Result set: class, number of ships sunk.
+
+WITH a AS(SELECT class, ship
+FROM Outcomes INNER JOIN Ships
+ON Outcomes.ship = ships.name
+WHERE result = 'sunk'
+UNION
+SELECT ship AS class, ship
+FROM Outcomes
+WHERE result = 'sunk')
+
+SELECT Classes.class, COUNT(ship)
+FROM Classes LEFT JOIN a
+ON Classes.class = a.class
 GROUP BY Classes.class
+
 
 
 
