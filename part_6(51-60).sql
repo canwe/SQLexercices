@@ -65,5 +65,14 @@ SELECT CAST(AVG(numGuns * 1.0)AS NUMERIC(4,2))  AS AvgnumGuns
 FROM b
 
 
+-- 55. For each class, determine the year the first ship of this class was launched. 
+-- If the lead ship’s year of launch is not known, get the minimum year of launch for the ships of this class.
+-- Result set: class, year.
+
+SELECT Classes.class,  MIN(launched)
+FROM Classes LEFT JOIN Ships
+ON Classes.class = Ships.class
+GROUP BY Classes.class
+
 
 
