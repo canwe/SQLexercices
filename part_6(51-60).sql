@@ -93,5 +93,33 @@ ON Classes.class = a.class
 GROUP BY Classes.class
 
 
+-- 57. For classes having irreparable combat losses and at least three ships in the database, display the name of the class and the number of ships sunk.
+
+SELECT Classes.class,COUNT(ship)
+FROM Classes LEFT JOIN (SELECT class, ship
+FROM Outcomes INNER JOIN Ships
+ON Outcomes.ship = ships.name
+WHERE result = 'sunk'
+UNION
+SELECT ship AS class, ship
+FROM Outcomes
+WHERE result = 'sunk')a
+ON Classes.class = a.class
+WHERE Classes.class IN(
+SELECT class
+FROM(
+SELECT class, name AS ship
+FROM  Ships
+UNION
+SELECT ship AS class, ship
+FROM Outcomes)a
+GROUP BY class
+HAVING Count(ship)>=3
+)
+GROUP BY Classes.class
+HAVING COUNT(ship)>0
+
+
+
 
 
