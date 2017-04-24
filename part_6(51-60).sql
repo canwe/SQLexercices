@@ -120,6 +120,34 @@ GROUP BY Classes.class
 HAVING COUNT(ship)>0
 
 
+-- 58. For each product type and maker in the Product table, find out, with a precision of two decimal places, the percentage ratio
+-- of the number of models of the actual type produced by the actual maker to the total number of models by this maker.
+-- Result set: maker, product type, the percentage ratio mentioned above.
+
+WITH a AS (SELECT maker, type, COUNT(model) as counter
+FROM Product
+GROUP BY maker,type),
+ b as (SELECT DISTINCT type
+FROM Product),
+c as (SELECT DISTINCT maker
+FROM PRODUCT),
+d as (SELECT maker, type
+FROM b,c),
+e AS (SELECT maker, SUM(counter) as summ
+FROM a
+GROUP BY maker),
+f AS(
+SELECT d.maker, d.type, CASE 
+WHEN a.counter IS NULL THEN 0
+ELSE a.counter END AS COUNTER
+FROM d LEFT JOIN a
+ON d.maker = a.maker AND d.type = a.type)
+
+SELECT f.maker, f.type, CASE
+WHEN e.summ =0 THEN 0.00
+ ELSE CAST((f.counter*100.0)/(e.summ) AS NUMERIC (6,2)) END prc
+FROM f INNER JOIN e
+ON f.maker = e.maker
 
 
 
