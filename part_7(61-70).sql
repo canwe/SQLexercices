@@ -38,3 +38,14 @@ FROM a FULL JOIN b
 ON a.point = b.point)
 SELECT SUM(income-outcome) as remain
 FROM c
+
+-- 63. Find the names of different passengers that ever travelled more than once occupying seats with the same number.
+
+SELECT name
+FROM Passenger
+WHERE ID_PSG IN
+(SELECT DISTINCT ID_PSG
+FROM Pass_in_Trip 
+GROUP BY ID_PSG,place
+HAVING COUNT(place) > 1)
+
