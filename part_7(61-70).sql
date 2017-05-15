@@ -49,3 +49,26 @@ FROM Pass_in_Trip
 GROUP BY ID_PSG,place
 HAVING COUNT(place) > 1)
 
+-- 64. Using the Income and Outcome tables, determine for each buy-back center the days when it received funds but made no payments, and vice versa.
+-- Result set: point, date, type of operation (inc/out), sum of money per day.
+
+WITH a AS (SELECT point, date, SUM(inc) as inc
+FROM INCOME
+GROUP BY point, date),
+b AS (SELECT point, date, SUM(out) as out
+FROM OUTCOME
+GROUP BY point, date),
+c AS(
+SELECT CASE WHEN a.point IS NULL THEN b.point ELSE a.point END point,
+CASE WHEN a.date IS NULL THEN b.date ELSE a.date END date,
+ inc, out
+FROM a FULL JOIN b
+ON a.point=b.point AND a.date=b.date
+WHERE inc IS NULL OR out IS NULL)
+
+SELECT point, date,
+CASE WHEN inc IS NULL THEN 'out' ELSE 'inc' END operation,
+CASE WHEN inc IS NULL THEN out ELSE inc END money
+FROM c
+
+
