@@ -69,6 +69,32 @@ WHERE inc IS NULL OR out IS NULL)
 SELECT point, date,
 CASE WHEN inc IS NULL THEN 'out' ELSE 'inc' END operation,
 CASE WHEN inc IS NULL THEN out ELSE inc END money
-FROM c
+FROM c;
+
+-- 65. Number the unique pairs {maker, type} in the Product table, ordering them as follows:
+-- - maker name in ascending order;
+-- - type of product (type) in the order PC, Laptop, Printer.
+-- If a manufacturer produces more than one type of product, its name should be displayed in the first row only;
+-- other rows for THIS manufacturer should contain an empty string (').
+
+With a AS (SELECT DISTINCT maker, 
+CASE WHEN type = 'PC' then 1
+WHEN type = 'Laptop' then 2
+ELSE 3 END ord , type
+FROM Product)
+
+SELECT row_number() over(ORDER BY maker, ord) num, 
+CASE 
+WHEN type='Laptop' AND (maker in (SELECT maker FROM Product WHERE 
+type='PC')) 
+THEN ''
+WHEN type='Printer' AND ((maker in (SELECT maker FROM Product WHERE 
+type='PC')) OR (maker in (SELECT maker FROM Product WHERE 
+type='Laptop'))) 
+THEN '' 
+ELSE maker 
+END AS maker, type
+FROM a
+
 
 
