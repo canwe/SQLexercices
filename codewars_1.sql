@@ -29,3 +29,15 @@ WHERE id IN (
   SELECT department_id 
   FROM sales
   WHERE price > 98)
+
+-- 4. Timmy works for a statistical analysis company and has been given a task of totaling the number of 
+-- sales on a given day grouped by each department name and then each day.
+
+SELECT 
+ CAST(s.transaction_date AS DATE) as day,
+  d.name as department,
+  COUNT(s.id) as sale_count
+  FROM department d JOIN sale s
+  on d.id = s.department_id
+  group by day,d.id
+  order by day, name asc
