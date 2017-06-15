@@ -41,3 +41,33 @@ SELECT
   on d.id = s.department_id
   group by day,d.id
   order by day, name asc
+
+-- 5. You recieved an invitation to an amazing party.
+-- Now you need to write an insert statement to add yourself to the table of participants.
+
+INSERT INTO participants
+VALUES ('MY NAME', 26, true);
+
+SELECT * FROM participants;
+
+-- 6. For this challenge you need to create a simple SELECT statement that will return all 
+-- columns from the people table, and join to the toys table so that you can return the COUNT of the toys
+
+SELECT p.id, p.name , COUNT(t.id )AS toy_count
+FROM people p INNER JOIN toys t
+ON p.id = t.people_id
+GROUP BY p.id
+
+-- 7. For this challenge you need to create a simple GROUP BY statement, 
+-- you want to group all the people by their age and count the people who have the same age.
+
+SELECT age, COUNT(id) people_count
+FROM people
+GROUP BY age
+
+-- 8. For this challenge you need to create a simple SELECT statement that will return all 
+-- columns from the products table, and join to the companies table so that you can return the company name.
+
+SELECT p.id, p.name, p.isbn, p.company_id, p.price, c.name as company_name
+FROM products p INNER JOIN companies c
+ON p.company_id = c.id
