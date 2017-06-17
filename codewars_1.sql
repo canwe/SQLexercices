@@ -71,3 +71,23 @@ GROUP BY age
 SELECT p.id, p.name, p.isbn, p.company_id, p.price, c.name as company_name
 FROM products p INNER JOIN companies c
 ON p.company_id = c.id
+
+-- 9. For this challenge you need to create a simple SELECT statement. Your task is to calculate the MIN, 
+-- MEDIAN and MAX scores of the students from the results table.
+
+with b as(
+SELECT CAST(cast(SUM(score) as FLOAT)/count(score) as FLOAT) as a
+FROM (
+  SELECT score ,
+    ROW_NUMBER() OVER (ORDER BY score ASC ) AS ra,
+    ROW_NUMBER() OVER (ORDER BY score DESC ) AS rd
+  FROM result 
+) x
+ WHERE ra IN (SELECT count(score)/2 from result) OR  ra IN (SELECT count(score)/2+1 from result)
+ ),
+t as (
+select MIN(score) as min, MAX(score) as max
+FROM result)
+
+SELECT t.min, b.a as MEDIAN, t.max
+FROM t,b
